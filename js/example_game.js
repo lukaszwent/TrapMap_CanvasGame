@@ -68,6 +68,36 @@ function playGame() {
       right: playerRightImage,
     }
   );
+  gameObjects[2] = new Enemy(
+    48 * 50 + -710,
+    48 * 50 + -700,
+    140,
+    35,
+    m1_en1_wp,
+    6,
+    playerDownImage,
+    {
+      up: playerUpImage,
+      down: playerDownImage,
+      left: playerLeftImage,
+      right: playerRightImage,
+    }
+  );
+  gameObjects[3] = new Enemy(
+    48 * 50 + -710,
+    48 * 50 + -700,
+    140,
+    35,
+    m1_en2_wp,
+    6,
+    playerDownImage,
+    {
+      up: playerUpImage,
+      down: playerDownImage,
+      left: playerLeftImage,
+      right: playerRightImage,
+    }
+  );
 
   /* END OF game specific code. */
 

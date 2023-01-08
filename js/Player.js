@@ -21,6 +21,9 @@ class Player extends GameObject {
   }
 
   render() {
+    //ctx.fillStyle = "blue";
+    //ctx.fillRect(this.x, this.y, this.width, this.height);
+
     ctx.drawImage(
       this.image,
       this.frames.val * this.playerWidth,

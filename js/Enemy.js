@@ -3,12 +3,18 @@ class Enemy extends GameObject {
   /* If the object animates, then it must also have an updateState() method. */
 
   //TODO dodać płynność przechodzenie (przez tą 1 sekunde przesuwa się o 1 px do przodu a nie od razu o 48px)
-  constructor(x, y, width, height, wp) {
+  constructor(x, y, width, height, wp, frames, image, sprites) {
     super(
       null
     ); /* as this class extends from GameObject, you must always call super() */
     this.width = width;
     this.height = height;
+
+    this.image = image;
+    this.sprites = sprites;
+    this.frames = { max: frames, val: 0, elapsed: 0 };
+    this.enemyWidth = width / frames;
+    this.enemyHeight = height;
 
     this.waypoints = parseCollisionsArray(wp);
 
@@ -36,7 +42,9 @@ class Enemy extends GameObject {
     this.delay = 0;
     this.direction = "RIGHT";
 
-    this.step = 48;
+    //this.step = 48;
+    this.step = 1;
+
     this.lastPoint = this.wpArray[0];
   }
 
@@ -50,7 +58,7 @@ class Enemy extends GameObject {
       ) {
         let minvalX = 10000;
         let minvalY = 10000;
-        console.log("POINT HITTED");
+        //console.log("POINT HITTED");
         this.wpArray.forEach((el, index) => {
           if (i !== index) {
             let valX = Math.abs(el.position.x - wp.position.x);
@@ -60,13 +68,13 @@ class Enemy extends GameObject {
               if (minvalY > valY && valY !== 0 && this.lastPoint !== el) {
                 minvalY = valY;
                 newPoint = el;
-                console.log(el);
+                //console.log(el);
               }
             } else {
               if (minvalX > valX && valX !== 0 && this.lastPoint !== el) {
                 minvalX = valX;
                 newPoint = el;
-                console.log(el);
+                //console.log(el);
               }
             }
           }
@@ -125,29 +133,56 @@ class Enemy extends GameObject {
     });
   }
 
-  move() {}
+  setSprite() {
+    if (this.direction === "UP") this.image = this.sprites.up;
+    else if (this.direction === "DOWN") this.image = this.sprites.down;
+    else if (this.direction === "LEFT") this.image = this.sprites.left;
+    else this.image = this.sprites.right;
+  }
 
   render() {
-    ctx.fillStyle = "red";
-    ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
+    //ctx.fillStyle = "red";
+    //ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
+    ctx.drawImage(
+      this.image,
+      this.frames.val * this.enemyWidth,
+      0,
+      this.image.width / this.frames.max,
+      this.image.height,
+      this.position.x,
+      this.position.y,
+      this.image.width / this.frames.max,
+      this.image.height
+    );
+
     this.delay++;
 
-    if (this.delay % 150 === 0) {
-      if (this.direction === "DOWN") {
-        this.position.y += this.step;
-        this.currentPos.y += this.step;
-      } else if (this.direction === "UP") {
-        this.position.y -= this.step;
-        this.currentPos.y -= this.step;
-      } else if (this.direction === "LEFT") {
-        this.position.x -= this.step;
-        this.currentPos.x -= this.step;
-      } else if (this.direction === "RIGHT") {
-        this.position.x += this.step;
-        this.currentPos.x += this.step;
-      }
-
-      this.setDirection();
+    //if (this.delay % 1 === 0) {
+    if (this.direction === "DOWN") {
+      this.position.y += this.step;
+      this.currentPos.y += this.step;
+    } else if (this.direction === "UP") {
+      this.position.y -= this.step;
+      this.currentPos.y -= this.step;
+    } else if (this.direction === "LEFT") {
+      this.position.x -= this.step;
+      this.currentPos.x -= this.step;
+    } else if (this.direction === "RIGHT") {
+      this.position.x += this.step;
+      this.currentPos.x += this.step;
     }
+
+    this.setDirection();
+    this.setSprite();
+
+    if (this.frames.max > 1) {
+      this.frames.elapsed++;
+    }
+
+    if (this.frames.elapsed % 10 === 0) {
+      if (this.frames.val < this.frames.max - 1) this.frames.val++;
+      else this.frames.val = 0;
+    }
+    //}
   }
 }

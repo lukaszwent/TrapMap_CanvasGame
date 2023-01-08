@@ -18,28 +18,14 @@ class TrapMapCanvasGame extends CanvasGame {
 
     console.log(this.boundaries);
 
-    gameObjects[2] = new Enemy(
-      48 * 50 + -710,
-      48 * 50 + -700,
-      48,
-      48,
-      m1_en1_wp
-    );
-
-    gameObjects[3] = new Enemy(
-      48 * 50 + -710,
-      48 * 50 + -700,
-      48,
-      48,
-      m1_en2_wp
-    );
-
     this.movables = [
       gameObjects[0],
       ...this.boundaries,
       gameObjects[2],
       gameObjects[3],
     ];
+
+    this.enemies = [gameObjects[2], gameObjects[3]];
   }
 
   checkBlockCollisions(block1, block2) {
@@ -51,7 +37,25 @@ class TrapMapCanvasGame extends CanvasGame {
     );
   }
 
+  checkPlayerEnemyCollisions(player, enemy) {
+    return (
+      player.x + player.playerWidth >= enemy.position.x &&
+      player.x <= enemy.position.x + enemy.enemyWidth &&
+      player.y <= enemy.position.y + enemy.enemyHeight &&
+      player.y + player.playerHeight >= enemy.position.y
+    );
+  }
+
   collisionDetection() {
+    if (this.enemies)
+      this.enemies.forEach((enemy) => {
+        //console.log(enemy);
+        //console.log(enemy.position, gameObjects[0].position);
+        if (this.checkPlayerEnemyCollisions(gameObjects[1], enemy)) {
+          console.log("PLAYER HIT ENEMY");
+        }
+      });
+
     let moving = true;
     if (this.boundaries) {
       this.boundaries.forEach((boundary) => {
